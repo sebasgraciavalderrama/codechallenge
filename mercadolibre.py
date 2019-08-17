@@ -62,47 +62,30 @@ insert_query = """INSERT INTO email (id, fromEmail, subject, date)
 
 
 # We iterate the body 
-for msgid, data in body: # Is a tuple
+for msgid, data in body: # It's a tuple
     envelope = data[b'ENVELOPE'] # We get the Envelope type data.
     ids.append(msgid) # We storage the ID of the message.
     subjects.append(envelope.subject.decode()) # We get the subject of the message.
-    fromEmail.append(envelope.from_) # We get the 
-    date.append(envelope.date)    
-    ## Now we insert the fields into the table
+    fromEmail.append(envelope.from_) # We get the sender email. We will come to this later.
+    date.append(envelope.date) # We get the date.
 
+# We have to iterate fromEmail since it has a different structure, we want to get the name and email of the sender in a single string.
 for x in fromEmail:
    for y in x:
-      finalSender.append(y)
+      finalSender.append(y) # We add the sender email to finalSender. i.e: 'Sebastian Gracia <sebastiangracia123@gmail.com>' 
       
-for x in finalSender:
-    print(x)      
-
+# We now go through the lists and add each value to the table 'email'.
 for (a, b, c, d) in zip(ids, finalSender, subjects, date):
     sql_command = insert_query.format(ids=a, fromEmail=b, subject=c, date=d)
-    cursor.execute(sql_command)
+    cursor.execute(sql_command) # We must execute the INSERT query for each set of values.
+    
 
+# We now fecth all the rows from the table.
 sql_query = """ SELECT * FROM email""";
 cursor.execute(sql_query)
 result = cursor.fetchall() 
+
+# We print them via console.
 for r in result:
     print(r)
     print('\n')    
- 
-
- 
- ##print('\n')
- ##for x in date:
- ##    print(x)
- ##print('\n')
-##for x in subject:
-##   print(x)
-##   print('\n')
-
-
-##print(len(messagesBody))
-##print('\n')
-##print(fromHeader)
-##print('\n')
-
-
-##print('%d messages in BODY' % len(messagesBody))
