@@ -1,3 +1,7 @@
+# Sebastián Gracia
+# Mercado Libre code challenge. Option 2
+# https://github.com/sebasgraciavalderrama/codechallenge
+
 import sqlite3
 from imapclient import IMAPClient
 
@@ -74,34 +78,25 @@ for x in fromEmail:
    for y in x:
       finalSender.append(y) # We add the sender email to finalSender. i.e: 'Sebastian Gracia <sebastiangracia123@gmail.com>' 
       
+    
+# At this point we have checked if the word exists in the body of a message. We must check the envelope fetched from the subject and repeat the previous loop.
+# It is important to mention that the word can be inside the subject and the body of the message. 
+# That is why we must check if the record exist in the ids list and if it does exist we won't add it.
+# If it does not exist we must add it. If we don't do this we will have duplicated records.
+     
+for msgid, data in subject: # It's a tuple
+    envelope = data[b'ENVELOPE'] # We get the Envelope type data.
+    for msgidBody in ids:
+        if msgidBody != msgid:          
+            ids.append(msgid) # We storage the ID of the message.
+            subjects.append(envelope.subject.decode()) # We get the subject of the message.
+            fromEmail.append(envelope.from_) # We get the sender email. We will come to this later.
+            date.append(envelope.date) # We get the date.
+
 # We now go through the lists and add each value to the table 'email'.
 for (a, b, c, d) in zip(ids, finalSender, subjects, date):
     sql_command = insert_query.format(ids=a, fromEmail=b, subject=c, date=d)
     cursor.execute(sql_command) # We must execute the INSERT query for each set of values.
-    
-# At this point we have checked if the word exists in the body of a message. We must check the envelope fechted from the subject and repeat the previous loop.
-for msgid, data in subject: # It's a tuple
-    envelope = data[b'ENVELOPE'] # We get the Envelope type data.
-    ids.append(msgid) # We storage the ID of the message.
-    subjects.append(envelope.subject.decode()) # We get the subject of the message.
-    fromEmail.append(envelope.from_) # We get the sender email. We will come to this later.
-    date.append(envelope.date) # We get the date.
-
-# it is important to mention that the word can be inside the subject and the body of the message. 
-# That is why we must check if the record exist in the table and if it does exist we wont add it.
-# If it does not exist we must added to the table.
-
-check_query = """IF EXISTS (SELECT * FROM email WHERE id = {msgid})
-                 BEGIN
-                     -- Does exist
-                 END
-                 ELSE
-                 BEGIN
-                     INSERT INTO email (id, fromEmail, subject, date) 
-                     VALUES ("{ids}", "{fromEmail}", "{subject}", "{date}");
-                END"""
-    
-
 
 
 # We now fecth all the rows from the table.
