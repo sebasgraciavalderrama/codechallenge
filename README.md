@@ -22,7 +22,7 @@ There are 2 ways of solving this challenge:
 2. Using Google Gmail API Services.
 
 I chose the option number 2 for the following reason:
-**Time** The recruiter gave enough me time to develop the challenge but due to other commitments that required my full attention I was unable to study and fully understand the documentation provided by Google Developer site.
+**Time** The recruiter gave me enough time to develop the challenge but due to other commitments that required my full attention I was unable to study and fully understand the documentation provided by Google Developer site.
 Using Google Gmail API Services would have been the most organized and well structured way of solving this challenge. However a series of prerequisites and installation of Google libraries made the process a little more longer than using libraries embedded into Python3 package.
 
 ## NOTE TO DEVELOPERS :notebook:
